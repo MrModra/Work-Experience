@@ -1,5 +1,6 @@
 #! /usr/bin/env python
-
+#
+# test of local changes
 #
 # Analyse image to count and record number and size of bright spots.
 #
