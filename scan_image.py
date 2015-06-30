@@ -23,9 +23,8 @@ import mahotas as mh
 #print 'number of arguments:', len(sys.argv), "arguments"
 #print 'argument list:', str(sys.argv)
 
-vebose = 0
 
-def scan(inputfile):
+def scan(inputfile, verbose):
    image = mh.imread(inputfile)
 
    thresh =  100 #changes the threshold for blob detection
@@ -44,12 +43,12 @@ def scan(inputfile):
       
       total = total + size[count] 
       
-      if vebose == 1:
+      if verbose == 1:
          print size[count]
       
       count = count + 1
       
-   if vebose == 1:
+   if verbose == 1:
       print "%s has a total of %d pixels" % (inputfile, total)
    
    return (nr_objects, total, thresh);
@@ -60,14 +59,17 @@ def scan(inputfile):
 def main(argv):
  
    try:
-      opts, args = getopt.getopt(argv,"i:ho:",["ifile=","ofile="])
+      opts, args = getopt.getopt(argv,"i:ho:v",["ifile=","ofile="])
    
    except getopt.GetoptError:
-      print 'arguments.py -i <inputfile> -o <outputfile>'
+      print 'arguments.py -i <inputfile> -o <outputfile> -v <verbose>'
       sys.exit(2)
      
-   if len(sys.argv) != 5:
-      print "%s -i <inputfile> -o <outputfile>" % sys.argv[0]
+   if (len(sys.argv) == 5 or len(sys.argv) == 6):
+      good = 1
+   
+   else:
+      print "%s -i <inputfile> -o <outputfile> -v <verbose>" % sys.argv[0]
       exit(2)
       
    for opt, arg in opts:
@@ -82,6 +84,11 @@ def main(argv):
       elif opt in ("-o", "--ofile"):
          outputfile = arg
          
+      if opt == "-v":
+         verbose = 1
+      
+      else:
+         verbose = 0
    
    print 'Input file is:', inputfile
    
@@ -89,7 +96,7 @@ def main(argv):
    
    output = open('output.csv', 'w+')
    
-   numofblobs, sizeofblobs, thresh = scan(inputfile)
+   numofblobs, sizeofblobs, thresh = scan(inputfile, verbose)
    
    output.write("%s, %d, %d" % (inputfile, numofblobs, sizeofblobs))
    
