@@ -44,7 +44,7 @@ def scan(inputfile, verbose):
       total = total + size[count] 
       
       if verbose == 1:
-         print size[count]
+         print "[blob %d] %d pixels" % (count, size[count])
       
       count = count + 1
       
