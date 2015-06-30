@@ -24,13 +24,11 @@ import mahotas as mh
 #print 'argument list:', str(sys.argv)
 
 
-def scan(inputfile, verbose):
+def scan(inputfile, verbose, threshold):
    image = mh.imread(inputfile)
 
-   thresh =  100 #changes the threshold for blob detection
-
-   labeled, nr_objects = mh.label(image > thresh)
-
+   labeled, nr_objects = mh.label(image > threshold) 
+   
    #print "%s has %d blobs" % (inputfile, nr_objects)
    
    size = mh.labeled.labeled_size(labeled)
@@ -51,25 +49,29 @@ def scan(inputfile, verbose):
    if verbose == 1:
       print "%s has a total of %d pixels" % (inputfile, total)
    
-   return (nr_objects, total, thresh);
+   return (nr_objects, total, threshold);
    
 
 
 
 def main(argv):
- 
+   
+   threshold = 100
+   verbose = 0
+   
+   
    try:
-      opts, args = getopt.getopt(argv,"i:ho:v",["ifile=","ofile="])
+      opts, args = getopt.getopt(argv,"i:ho:vt:",["ifile=","ofile="])
    
    except getopt.GetoptError:
-      print 'arguments.py -i <inputfile> -o <outputfile> -v <verbose>'
+      print 'arguments.py -i <inputfile> -o <outputfile> -v <verbose> -t <threshold>'
       sys.exit(2)
      
-   if (len(sys.argv) == 5 or len(sys.argv) == 6):
+   if (len(sys.argv) == 5 or len(sys.argv) == 6 or len(sys.argv) == 7 or len(sys.argv) == 8):
       good = 1
    
    else:
-      print "%s -i <inputfile> -o <outputfile> -v <verbose>" % sys.argv[0]
+      print "%s -i <inputfile> -o <outputfile> -v <verbose> -t <threshold>" % sys.argv[0]
       exit(2)
       
    for opt, arg in opts:
@@ -84,19 +86,19 @@ def main(argv):
       elif opt in ("-o", "--ofile"):
          outputfile = arg
          
-      if opt == "-v":
+      elif opt == "-t":
+         threshold = int(arg)
+            
+      elif opt == "-v":
          verbose = 1
       
-      else:
-         verbose = 0
-   
    print 'Input file is:', inputfile
    
    print 'Output file is:', outputfile
    
    output = open('output.csv', 'w+')
    
-   numofblobs, sizeofblobs, thresh = scan(inputfile, verbose)
+   numofblobs, sizeofblobs, thresh = scan(inputfile, verbose, threshold)
    
    output.write("%s, %d, %d" % (inputfile, numofblobs, sizeofblobs))
    
