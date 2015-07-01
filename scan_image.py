@@ -33,18 +33,25 @@ def scan(inputfile, verbose, threshold):
    
    size = mh.labeled.labeled_size(labeled)
    
-   count = 1
-   
+   # keeping track of total pixels and blob count. 
+   # and create a list of blob sizes
+   c = 1
    total = 0
+   list = []
+   while c <= nr_objects:
+      total = total + size[c] 
+      list.append(size[c])
+      c = c + 1
    
-   while count <= nr_objects:
-      
-      total = total + size[count] 
-      
-      if verbose == 1:
-         print "[blob %d] %d pixels" % (count, size[count])
-      
-      count = count + 1
+   # sort the list of sizes
+   list.sort(key=int)
+   
+   # print out the list of sizes
+   if verbose == 1:
+         i = 1
+         for item in list:
+            print "[blob %d] %d pixels" % (i, item)  
+            i = i + 1
       
    if verbose == 1:
       print "%s has a total of %d pixels" % (inputfile, total)
